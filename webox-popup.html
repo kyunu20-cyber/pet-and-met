@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>도전장보기 크루 - WiBox</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+      background: #1a1a1a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    /* ── 배경 화면 (앱 화면 시뮬레이션) ── */
+    .app-bg {
+      width: 375px;
+      height: 812px;
+      background: #f0f0f0;
+      border-radius: 40px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+    }
+
+    .app-bg-inner {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(180deg, #e8e8e8 0%, #d4d4d4 100%);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding: 12px;
+      padding-top: 50px;
+      filter: blur(1px);
+    }
+
+    .dummy-card {
+      background: white;
+      border-radius: 12px;
+      height: 140px;
+    }
+
+    /* ── WiBox 팝업 오버레이 ── */
+    .webox-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      display: flex;
+      align-items: flex-end;
+      border-radius: 40px;
+    }
+
+    /* ── WiBox 팝업 카드 ── */
+    .webox-card {
+      width: 100%;
+      background: #f5f5f5;
+      border-radius: 28px 28px 0 0;
+      padding: 24px 20px 12px;
+      animation: slideUp 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); opacity: 0; }
+      to   { transform: translateY(0);   opacity: 1; }
+    }
+
+    /* ── 타이틀 박스 ── */
+    .title-box {
+      background: #3d3d3d;
+      border-radius: 10px;
+      padding: 13px 20px;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .title-box span {
+      color: #ffffff;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    /* ── 설명 텍스트 박스 ── */
+    .desc-box {
+      background: #4a4a4a;
+      border-radius: 10px;
+      padding: 12px 16px;
+      text-align: center;
+      margin-bottom: 10px;
+      line-height: 1.55;
+    }
+
+    .desc-box p {
+      color: #e0e0e0;
+      font-size: 13px;
+    }
+
+    .desc-box p strong {
+      color: #ffffff;
+    }
+
+    /* ── 로고 영역 ── */
+    .logo-box {
+      background: #3a3a3a;
+      border-radius: 14px;
+      padding: 28px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+      min-height: 160px;
+    }
+
+    /* ── 도전장보기 SVG 로고 ── */
+    .logo-svg-wrap {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* ── CTA 버튼 ── */
+    .cta-btn {
+      background: #3d3d3d;
+      border: none;
+      border-radius: 10px;
+      padding: 15px 20px;
+      width: 100%;
+      text-align: center;
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-bottom: 12px;
+      letter-spacing: -0.3px;
+      transition: background 0.15s;
+    }
+
+    .cta-btn:hover { background: #555; }
+
+    /* ── 네 / 아니오 버튼 ── */
+    .yn-wrap {
+      background: white;
+      border-radius: 50px;
+      display: flex;
+      overflow: hidden;
+      border: 1px solid #e0e0e0;
+    }
+
+    .yn-btn {
+      flex: 1;
+      padding: 14px 0;
+      border: none;
+      background: white;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      color: #1a1a1a;
+      transition: background 0.15s;
+    }
+
+    .yn-btn:hover { background: #f0f0f0; }
+
+    .yn-divider {
+      width: 1px;
+      background: #e0e0e0;
+      align-self: stretch;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-bg">
+  <!-- 배경 앱 화면 (흐림 처리) -->
+  <div class="app-bg-inner">
+    <div class="dummy-card"></div>
+    <div class="dummy-card"></div>
+    <div class="dummy-card"></div>
+    <div class="dummy-card"></div>
+    <div class="dummy-card"></div>
+    <div class="dummy-card"></div>
+  </div>
+
+  <!-- WiBox 팝업 -->
+  <div class="webox-overlay">
+    <div class="webox-card">
+
+      <!-- 타이틀 -->
+      <div class="title-box">
+        <span>도전장보기 크루</span>
+      </div>
+
+      <!-- 설명 -->
+      <div class="desc-box">
+        <p>혼자서 도전하기 어려웠던 일,</p>
+        <p>이제 <strong>함께 도전할 수 있는 '장'</strong>을 만들어 드릴게요!</p>
+      </div>
+
+      <!-- 로고 박스 -->
+      <div class="logo-box">
+        <div class="logo-svg-wrap">
+          <!-- 도전장보기 로고 SVG -->
+          <svg viewBox="0 0 320 110" width="290" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <!-- 민트 색상 그라디언트 -->
+              <linearGradient id="mintGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#a8ede4;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#6fd4c8;stop-opacity:1" />
+              </linearGradient>
+              <!-- 아웃라인 필터 -->
+              <filter id="outline">
+                <feMorphology in="SourceAlpha" operator="dilate" radius="3" result="expanded"/>
+                <feFlood flood-color="#5bbfb5" result="color"/>
+                <feComposite in="color" in2="expanded" operator="in" result="outline"/>
+                <feMerge>
+                  <feMergeNode in="outline"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+              <!-- 글로우 효과 -->
+              <filter id="glow">
+                <feGaussianBlur stdDeviation="2" result="blur"/>
+                <feMerge>
+                  <feMergeNode in="blur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
+
+            <!-- 메인 텍스트 아웃라인 (그림자) -->
+            <text
+              x="160" y="82"
+              text-anchor="middle"
+              font-family="'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif"
+              font-size="76"
+              font-weight="900"
+              fill="#5bbfb5"
+              stroke="#5bbfb5"
+              stroke-width="8"
+              stroke-linejoin="round"
+              paint-order="stroke"
+              letter-spacing="-2"
+            >도전장보기</text>
+
+            <!-- 메인 텍스트 (민트 채우기) -->
+            <text
+              x="160" y="82"
+              text-anchor="middle"
+              font-family="'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif"
+              font-size="76"
+              font-weight="900"
+              fill="url(#mintGrad)"
+              stroke="white"
+              stroke-width="2"
+              stroke-linejoin="round"
+              paint-order="stroke"
+              letter-spacing="-2"
+            >도전장보기</text>
+
+            <!-- 주먹 아이콘 (도 위) -->
+            <g transform="translate(14, 4)" filter="url(#glow)">
+              <circle cx="0" cy="0" r="13" fill="#6fd4c8" stroke="white" stroke-width="1.5"/>
+              <!-- 주먹 모양 -->
+              <text x="0" y="5" text-anchor="middle" font-size="14">✊</text>
+            </g>
+
+            <!-- 장바구니 아이콘 (기 위 오른쪽) -->
+            <g transform="translate(306, 4)" filter="url(#glow)">
+              <circle cx="0" cy="0" r="13" fill="#6fd4c8" stroke="white" stroke-width="1.5"/>
+              <text x="0" y="5" text-anchor="middle" font-size="13">🛒</text>
+            </g>
+
+            <!-- 장식 점들 -->
+            <circle cx="240" cy="8" r="3" fill="#a8ede4" opacity="0.7"/>
+            <circle cx="255" cy="14" r="2" fill="#a8ede4" opacity="0.5"/>
+            <circle cx="70" cy="10" r="2.5" fill="#a8ede4" opacity="0.6"/>
+            <circle cx="82" cy="4" r="2" fill="#a8ede4" opacity="0.5"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- CTA 버튼 -->
+      <button class="cta-btn">도전'장' 보러가기</button>
+
+      <!-- 네 / 아니오 -->
+      <div class="yn-wrap">
+        <button class="yn-btn">네</button>
+        <div class="yn-divider"></div>
+        <button class="yn-btn">아니오</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
